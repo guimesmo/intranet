@@ -26,4 +26,5 @@ class UserProfileModelTest(TestCase):
         file_contents = 'lorem ipsum dolor sit amet'
         uploaded_file = SimpleUploadedFile('lorem.txt', file_contents.encode('utf-8'))
         UserFile.objects.create(owner=user, upload=uploaded_file)
-        self.assertAlmostEqual(user.userprofile.get_volume_of_user_files(), len(file_contents.encode('utf-8'))/(1024*1024))
+        self.assertAlmostEqual(user.userprofile.get_volume_of_user_files(),
+                               len(file_contents.encode('utf-8')) / (1024 * 1024))

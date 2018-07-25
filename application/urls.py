@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from user_profile.views import UserFileList
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', UserFileList.as_view()),
 ]
