@@ -1,6 +1,9 @@
+import os
+
 from django.db import models
 from django.conf import settings
 
+from file_manager.models import UserFile
 
 USER_PROFILE_COMMON = 101
 USER_PROFILE_ADMIN = 102
@@ -38,8 +41,14 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.get_full_name() or "Nome não informado"
 
+    def get_user_files(self):
+        return UserFile.objects.filter(owner=self.user)
+
     def get_number_of_user_files(self):
-        pass
+        return self.get_user_files().count()
 
     def get_volume_of_user_files(self):
-        pass
+        file_paths = self.get_user_files().values_list("upload", flat=True)
+        volume_bytes = sum([os.path.getsize(os.path.join(settings.MEDIA_ROOT, f)) for f in file_paths])
+        volume_megabytes = volume_bytes / (1024*1024)
+        return volume_megabytes
