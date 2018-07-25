@@ -15,6 +15,14 @@ class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     profile_type = models.PositiveIntegerField("Tipo de usuário", choices=USER_PROFILE_CHOICES)
 
+    full_address = models.CharField("Endereço completo", max_length=255)
+    city_state = models.CharField("Cidade - UF", max_length=50)
+
+    upload_volume_limit = models.PositiveIntegerField("limite de volume de arquivos", blank=True, null=True,
+                                                      help_text="Volume de dados máximo de arquivos do usuário")
+    upload_number_limit = models.PositiveIntegerField("limite de máximo de arquivos", blank=True, null=True,
+                                                      help_text="Número máximo de arquivos do usuário")
+
     class Meta:
         verbose_name = "perfil de usuário"
         verbose_name_plural = "perfis de usuários"
@@ -29,3 +37,9 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.get_full_name() or "Nome não informado"
+
+    def get_number_of_user_files(self):
+        pass
+
+    def get_volume_of_user_files(self):
+        pass
