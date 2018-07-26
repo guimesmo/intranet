@@ -18,12 +18,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import logout
 from django.urls import path
+from django.views.generic import RedirectView
 
-from user_profile.views import UserFileList
+from user_profile.views import UserFileList, delete_file
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', login_required(UserFileList.as_view())),
+    path('', RedirectView.as_view(url="/uploads/")),
+    path('uploads/', login_required(UserFileList.as_view())),
+    path('uploads/<upload_id>/delete', delete_file),
 
     # account actions
     path('login/', LoginView.as_view(template_name='login.html')),

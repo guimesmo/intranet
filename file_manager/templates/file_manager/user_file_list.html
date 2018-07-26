@@ -16,28 +16,39 @@
                 </thead>
                 <tbody>
                 {% for userfile in object_list %}
-                <tr>
-                    <td><i class="material-icons">all_inbox</i></td>
-                    <td><a href="{{ userfile.upload.url }}">{{ userfile.get_filename }}</a></td>
-                    <td>{{ userfile.upload_date|date:"d/m/Y" }}</td>
-                    <td>{{ userfile.get_file_size|floatformat:2 }}</td>
-                    <td>{{ userfile.public|yesno|upper }}</td>
-                    <td>Delete</td>
-                </tr>
+                    <tr>
+                        <td><i class="material-icons">all_inbox</i></td>
+                        <td><a href="{{ userfile.upload.url }}">{{ userfile.get_filename }}</a></td>
+                        <td>{{ userfile.upload_date|date:"d/m/Y" }}</td>
+                        <td>{{ userfile.get_file_size|floatformat:2 }}</td>
+                        <td>{{ userfile.public|yesno|upper }}</td>
+                        <td><a href="/uploads/{{ userfile.id }}/delete?next={{ request.get_full_path }}"
+                               class="delete-file"><i class="material-icons materialize-red-text">delete_forever</i></a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="orange-text">Nenhum arquivo encontrado</td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
-    <ul class="pagination">
-        <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-        <li class="active"><a href="#!">1</a></li>
-        <li class="waves-effect"><a href="#!">2</a></li>
-        <li class="waves-effect"><a href="#!">3</a></li>
-        <li class="waves-effect"><a href="#!">4</a></li>
-        <li class="waves-effect"><a href="#!">5</a></li>
-        <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-    </ul>
+    {% if is_paginated %}
+        <ul class="pagination right">
+            {% if page_obj.has_previous %}
+                <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a>
+                </li>
+            {% endif %}
+            <li class="waves-effect">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </li>
+            {% if page_obj.has_next %}
+                <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
 
 {% endblock %}

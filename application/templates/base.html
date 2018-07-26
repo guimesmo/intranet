@@ -10,6 +10,27 @@
 
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style type="text/css">
+        .messages .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .messages .error {
+            color: #F44336;
+            font-weight: bold;
+        }
+
+        .errorlist {
+            margin: 0 0 15px 0;
+            padding: 0;
+        }
+
+        .errorlist li {
+            list-style-type: square !important;
+            margin-left: 30px;
+            color: #F44336;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,12 +47,18 @@
             </div>
         </div>
     </nav>
-
 </header>
 <main>
     <div class="container">
         <div class="row">
             <div class="col s12 m12 xl12">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
                 {% block content %}
                 {% endblock %}
             </div>
