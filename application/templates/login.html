@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <style type="text/css">
+        .login-form {
+            margin-top: 50px;
+        }
+
+        .errorlist {
+            margin: 0 0 15px 0;
+            padding: 0;
+        }
+
+        .errorlist li {
+            list-style-type: square !important;
+            margin-left: 30px;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <nav>
+        <div class="container">
+            <div class="row">
+                <div class="nav-wrapper">
+                    <a href="#" class="brand-logo">INTRANET</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+</header>
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m8 xl6">
+                <form class="login-form" method="post" action=".">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="/" />
+                    <div class="mdc-text-field">
+                        <label class="mdc-floating-label" for="loginFormUsername">Nome de usuário</label>
+                        <input name="username" type="text" id="loginFormUsername" class="mdc-text-field__input">
+                        <div>{{ form.username.errors }}</div>
+                    </div>
+                    <div class="mdc-text-field">
+                        <label class="mdc-floating-label" for="loginFormPassword">Senha</label>
+                        <input name="password" type="password" id="loginFormPassword" class="mdc-text-field__input">
+                        <div>{{ form.password.errors }}</div>
+                    </div>
+                    <button type="submit" class="btn">
+                        Entrar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+</body>
+</html>
