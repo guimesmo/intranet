@@ -20,13 +20,14 @@ from django.contrib.auth.views import logout
 from django.urls import path
 from django.views.generic import RedirectView
 
-from user_profile.views import UserFileList, delete_file
+from user_profile.views import UserFileList, delete_file, toogle_visibility
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url="/uploads/")),
     path('uploads/', login_required(UserFileList.as_view())),
     path('uploads/<upload_id>/delete', delete_file),
+    path('uploads/<upload_id>/toogle-visibility', toogle_visibility),
 
     # account actions
     path('login/', LoginView.as_view(template_name='login.html')),

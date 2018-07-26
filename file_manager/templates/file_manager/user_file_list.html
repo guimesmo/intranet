@@ -42,23 +42,30 @@
             <table id="example" class="mdl-data-table" style="width:100%">
                 <thead>
                 <tr>
-                    <th colspan="2">Nome do arquivo</th>
+                    <th style="width: 20px">Público</th>
+                    <th>&nbsp;</th>
+                    <th>Nome do arquivo</th>
                     <th>Data</th>
                     <th>Tamanho (Mb)</th>
-                    <th style="width: 20px">Público</th>
                     <th style="width: 20px">Excluir</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for userfile in object_list %}
                     <tr>
+                        <td>
+                            <a href="/uploads/{{ userfile.id }}/toogle-visibility?next={{ request.get_full_path }}"
+                                onclick="return confirm('Tem certeza que deseja alterar a visibilidade?');">
+                                <i class="material-icons materialize-text">{% if userfile.public %}check{% else %}check_box_outline_blank{% endif %}</i>
+                            </a>
+                        </td>
                         <td style="width: 20px"><i class="material-icons">all_inbox</i></td>
                         <td><a href="{{ userfile.upload.url }}">{{ userfile.get_filename }}</a></td>
                         <td>{{ userfile.upload_date|date:"d/m/Y" }}</td>
                         <td>{{ userfile.get_file_size|floatformat:2 }}</td>
-                        <td>{{ userfile.public|yesno|upper }}</td>
                         <td><a href="/uploads/{{ userfile.id }}/delete?next={{ request.get_full_path }}"
-                               class="delete-file"><i class="material-icons materialize-red-text">delete_forever</i></a>
+                               class="delete-file" onclick="return confirm('Tem certeza que deseja remover?');">
+                            <i class="material-icons materialize-red-text">delete_forever</i></a>
                         </td>
                     </tr>
                 {% empty %}

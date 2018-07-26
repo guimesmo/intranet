@@ -40,3 +40,12 @@ def delete_file(request, upload_id):
     messages.add_message(request, messages.SUCCESS, "Arquivo removido com sucesso")
     return HttpResponseRedirect(next_url)
 
+
+def toogle_visibility(request, upload_id):
+    next_url = request.GET.get("next", "/uplads")
+    user_file = get_object_or_404(UserFile, pk=upload_id, owner=request.user)
+    user_file.public = not user_file.public
+    user_file.save()
+    messages.add_message(request, messages.SUCCESS, "Visibilidade atualizada")
+    return HttpResponseRedirect(next_url)
+
