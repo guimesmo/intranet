@@ -1,13 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model, update_session_auth_hash
+from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
+from django.utils.decorators import method_decorator
 
 from django.views.generic import ListView
 from django.views.generic.base import View
 
 from file_manager.models import UserFile
 from user_profile.forms import UserProfileForm
+from user_profile.models import UserProfile
 
 User = get_user_model()
 
@@ -70,7 +73,16 @@ class UserFileList(ListView):
                 upload=upload
             )
             messages.add_message(request, messages.SUCCESS, "Arquivo inserido com sucesso")
-        return HttpResponseRedirect(next_url)
+
+
+class UserList(ListView):
+    template_name = "user_profile/user_list.html"
+    model = UserProfile
+    paginate_by = 30
+
+    @method_decorator(permission_required("user_profile.can_manage_user_information"))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
 
 def delete_file(request, upload_id):
