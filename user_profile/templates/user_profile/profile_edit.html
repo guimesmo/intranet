@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="row">
+        <div class="col s12 m12 xl12">
+            <form class="profile-form" method="post" action=".">
+                {% csrf_token %}
+                <h5>{{ user.get_full_name }}:</h5>
+                <p>
+                    <strong>Email:</strong> {{ user.email }}
+                </p>
+                <p>
+                    <strong>Limite de utilização
+                        (volume):</strong> {{ user.userprofile.upload_volume_limit|default_if_none:"ilimitado" }}
+                </p>
+                <p>
+                    <strong>Limite de utilização (nrº de
+                        arquivos):</strong> {{ user.userprofile.upload_number_limit|default_if_none:"ilimitado" }}
+                </p>
+                <div class="col s12 m12 xl12">
+                    <div class="row">
+                        <fieldset class="col s12 m8 xl8">
+                            <h5>Editar informações</h5>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_fulll_address">Endereço completo</label>
+                                <input name="full_address" type="text" id="field_fulll_address"
+                                       class="mdc-text-field__input"
+                                       value="{{ form.full_address.value|default_if_none:"" }}"
+                                       placeholder="Rua/Avenida W, nº X, Apto Y, Bairro Z"
+                                >
+                                <div>{{ form.full_address.errors }}</div>
+                            </div>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_city_state">Cidade - Estado</label>
+                                <input name="city_state" type="text" id="field_city_state"
+                                       class="mdc-text-field__input"
+                                       value="{{ form.city_state.value|default_if_none:"" }}"
+                                       placeholder="Ex. São Paulo - SP">
+                                <div>{{ form.city_state.errors }}</div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="row">
+                        <fieldset class="col s12 m8 xl8">
+                            <h5>Alterar senha</h5>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_password">Senha</label>
+                                <input name="password" id="field_password" type="password"
+                                       class="mdc-text-field__input"
+                                       placeholder="Somente em caso de alteração de senha"
+                                       value=""
+                                >
+                                <div>{{ form.password.errors }}</div>
+                            </div>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_password_confirmation">Confirmação</label>
+                                <input name="password_confirmation" id="field_password_confirmation" type="password"
+                                       class="mdc-text-field__input"
+                                       value=""
+                                       placeholder="Re-insira a nova senha"
+                                >
+                                <div>{{ form.password_confirmation.errors }}</div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                {{ form.non_field_errors }}
+                <div class="row">
+                    <div class="col s12 m2 xl1">
+                        <button type="submit" class="btn btn-large">
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

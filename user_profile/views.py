@@ -1,11 +1,50 @@
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth import get_user_model, update_session_auth_hash
+from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.shortcuts import get_object_or_404, render
 
-# Create your views here.
 from django.views.generic import ListView
+from django.views.generic.base import View
 
 from file_manager.models import UserFile
+from user_profile.forms import UserProfileForm
+
+User = get_user_model()
+
+
+class UserProfileView(View):
+    template_name = 'contact.html'
+
+
+    def get(self, request, user_id=None):
+        if user_id:
+            if request.user.has_perm("user_profile", "can_manage_user_information"):
+                user = User.objects.get(pk=user_id)
+            else:
+                return HttpResponseForbidden("Você não tem permissão para executar esta ação")
+        else:
+            user = request.user
+        form = UserProfileForm(instance=user.userprofile)
+        return render(request, "user_profile/profile_edit.html", context={"form": form, "user": user})
+
+    def post(self, request, user_id=None):
+        if user_id:
+            if request.user.has_perm("user_profile", "can_manage_user_information"):
+                user = User.objects.get(pk=user_id)
+                form = UserProfileForm(instance=user.userprofile, data=request.POST)
+            else:
+                return HttpResponseForbidden("Você não tem permissão para executar esta ação")
+        else:
+            user = request.user
+            form = UserProfileForm(instance=user.userprofile, data=request.POST)
+
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, user)
+            messages.add_message(request, messages.SUCCESS, "Informações atualizadas com sucesso")
+            return HttpResponseRedirect(request.path)
+
+        return render(request, "user_profile/profile_edit.html", context={"form": form, "user": user})
 
 
 class UserFileList(ListView):
