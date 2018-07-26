@@ -1,9 +1,9 @@
 import os
+from datetime import datetime
 
 from django.db import models
 from django.conf import settings
 
-from file_manager.models import UserFile
 
 USER_PROFILE_COMMON = 101
 USER_PROFILE_ADMIN = 102
@@ -12,6 +12,10 @@ USER_PROFILE_CHOICES = (
     (USER_PROFILE_COMMON, "FUNCIONARIO"),
     (USER_PROFILE_ADMIN, "GESTOR"),
 )
+
+
+def user_directory_path(instance, filename):
+    return 'uploads/{0}/{1}/{2}'.format(instance.owner.username, datetime.now().strftime("%Y/%m/%d"), filename)
 
 
 class UserProfile(models.Model):
@@ -52,3 +56,19 @@ class UserProfile(models.Model):
         volume_bytes = sum([os.path.getsize(os.path.join(settings.MEDIA_ROOT, f)) for f in file_paths])
         volume_megabytes = volume_bytes / (1024*1024)
         return volume_megabytes
+
+
+class UserFile(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="responsável", on_delete=models.PROTECT)
+    public = models.BooleanField("público", default=False)
+    upload = models.FileField(upload_to=user_directory_path)
+    upload_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.upload)
+
+    def get_filename(self):
+        return os.path.basename(self.upload.name)
+
+    def get_file_size(self):
+        return os.path.getsize(self.upload.path) / (1024*1024)

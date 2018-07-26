@@ -8,16 +8,14 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 from django.views.generic.base import View
 
-from file_manager.models import UserFile
-from user_profile.forms import UserProfileForm
-from user_profile.models import UserProfile
+from .models import UserFile, UserProfile
+from .forms import UserProfileForm
 
 User = get_user_model()
 
 
 class UserProfileView(View):
     template_name = 'contact.html'
-
 
     def get(self, request, user_id=None):
         if user_id:
@@ -51,7 +49,7 @@ class UserProfileView(View):
 
 
 class UserFileList(ListView):
-    template_name = "file_manager/user_file_list.html"
+    template_name = "user_profile/user_file_list.html"
     model = UserFile
     paginate_by = 30
 
@@ -73,6 +71,8 @@ class UserFileList(ListView):
                 upload=upload
             )
             messages.add_message(request, messages.SUCCESS, "Arquivo inserido com sucesso")
+        return HttpResponseRedirect(next_url)
+
 
 
 class UserList(ListView):
