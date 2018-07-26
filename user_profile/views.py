@@ -17,6 +17,22 @@ class UserFileList(ListView):
         user = self.request.user
         return self.model.objects.filter(owner=user)
 
+    def post(self, request):
+        next_url = request.GET.get("next", "/uploads")
+
+        upload = request.FILES.get("upload")
+        if not upload:
+            messages.add_message(request, messages.ERROR, "Falha ao enviar arquivo. Por favor, verifique ")
+        else:
+            public = request.POST.get("public")
+            user_file = UserFile.objects.create(
+                owner=request.user,
+                public=bool(public),
+                upload=upload
+            )
+            messages.add_message(request, messages.SUCCESS, "Arquivo inserido com sucesso")
+        return HttpResponseRedirect(next_url)
+
 
 def delete_file(request, upload_id):
     next_url = request.GET.get("next", "/uplads")
