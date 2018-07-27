@@ -1,13 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="row">
+        <div>
+            <a href="/usuarios/novo" class="btn right"><i class="material-icons">person_add</i>ADICIONAR USUÁRIO</a>
+        </div>
+    </div>
+    <div class="row">
         <div class="col s12 m12 xl12">
             <table class="mdl-data-table" style="width:100%">
                 <thead>
                 <tr>
-                    <th style="width: 20px">Usuário</th>
+                    <th>Usuário</th>
+                    <th>Perfil</th>
                     <th>Limite (volume)</th>
-                    <th>Limite (núermo)</th>
+                    <th>Limite (número)</th>
                     <th>Utilização (Mb)</th>
                     <th style="width: 20px">Editar</th>
                 </tr>
@@ -19,16 +25,19 @@
                             {{ userprofile.user.get_full_name }}
                         </td>
                         <td>
-
+                            {{ userprofile.get_profile_type_display }}
                         </td>
                         <td>
-
+                            {{ userprofile.upload_volume_limit|default_if_none:"ilimitado" }}{% if userprofile.upload_volume_limit %} MB{% endif %}
                         </td>
                         <td>
-
+                            {{ userprofile.upload_number_limit|default_if_none:"ilimitado"  }}
                         </td>
                         <td>
-
+                            {{ userprofile.get_volume_of_user_files|floatformat:3|default_if_none:0  }} MB
+                        </td>
+                        <td>
+                            <a href="/usuarios/{{ userprofile.pk }}" class="orange-text"><i class="material-icons">edit</i></a>
                         </td>
                     </tr>
                 {% empty %}

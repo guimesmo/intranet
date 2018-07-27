@@ -5,9 +5,10 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
 
-from django.views.generic import ListView
+from django.views.generic import ListView, FormView, UpdateView
 from django.views.generic.base import View
 
+from user_profile.forms import UserProfileAdminForm
 from .models import UserFile, UserProfile
 from .forms import UserProfileForm
 
@@ -65,14 +66,13 @@ class UserFileList(ListView):
             messages.add_message(request, messages.ERROR, "Falha ao enviar arquivo. Por favor, verifique ")
         else:
             public = request.POST.get("public")
-            user_file = UserFile.objects.create(
+            UserFile.objects.create(
                 owner=request.user,
                 public=bool(public),
                 upload=upload
             )
             messages.add_message(request, messages.SUCCESS, "Arquivo inserido com sucesso")
         return HttpResponseRedirect(next_url)
-
 
 
 class UserList(ListView):
@@ -83,6 +83,38 @@ class UserList(ListView):
     @method_decorator(permission_required("user_profile.can_manage_user_information"))
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
+
+
+class UserProfileCreateView(FormView):
+    form_class = UserProfileAdminForm
+    template_name = "user_profile/profile_edit_admin.html"
+    success_url = '.'
+
+    @method_decorator(permission_required("user_profile.can_manage_user_information"))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        instance = form.save()
+        messages.success(self.request, "Informações atualizadas com sucesso")
+        return HttpResponseRedirect("/usuarios/%s" % instance.id)
+
+
+class UserProfileAdminEditView(UpdateView):
+    form_class = UserProfileAdminForm
+    template_name = "user_profile/profile_edit_admin.html"
+    success_url = '.'
+    pk_url_kwarg = "user_profile_id"
+    model = UserProfile
+
+    @method_decorator(permission_required("user_profile.can_manage_user_information"))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        instance = form.save()
+        messages.success(self.request, "Informações atualizadas com sucesso")
+        return HttpResponseRedirect("/usuarios/%s" % instance.id)
 
 
 def delete_file(request, upload_id):

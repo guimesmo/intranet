@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="row">
+        <div class="col s12 m12 xl12">
+            <form class="profile-form" method="post" action=".">
+                {% csrf_token %}
+                <h5>Editar informações do usuário</h5>
+                <div class="col s12 m12 xl12">
+                    <div class="row">
+                        <fieldset class="col s12 m8 xl8">
+                            <h5>Identificação do usuário</h5>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_first_name">Nome</label>
+                                <input name="first_name" type="text" id="field_first_name"
+                                       class="mdc-text-field__input"
+                                       value="{{ form.first_name.value|default_if_none:"" }}"
+                                       placeholder="Nome do usuário"
+                                >
+                                <div>{{ form.first_name.errors }}</div>
+                            </div>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_first_name">Sobrenome</label>
+                                <input name="last_name" type="text" id="field_last_name"
+                                       class="mdc-text-field__input"
+                                       value="{{ form.last_name.value|default_if_none:"" }}"
+                                       placeholder="Sobrenome"
+                                >
+                                <div>{{ form.last_name.errors }}</div>
+                            </div>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_email">Email</label>
+                                <input name="email" type="text" id="field_email"
+                                       class="mdc-text-field__input"
+                                       value="{{ form.email.value|default_if_none:"" }}"
+                                       placeholder="email@exemplo.com"
+                                >
+                                <div>{{ form.email.errors }}</div>
+                            </div>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_password">Senha</label>
+                                <input name="password" id="field_password" type="password"
+                                       class="mdc-text-field__input"
+                                       placeholder="Obrigatório somente na inclusão"
+                                       value=""
+                                >
+                                <div>{{ form.password.errors }}</div>
+                            </div>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_password_confirmation">Confirmação</label>
+                                <input name="password_confirmation" id="field_password_confirmation" type="password"
+                                       class="mdc-text-field__input"
+                                       value=""
+                                       placeholder="Re-insira a nova senha"
+                                >
+                                <div>{{ form.password_confirmation.errors }}</div>
+                            </div>
+                            <div class="mdc-text-field">
+                                <div class="input-field">
+                                    <select name="profile_type" id="field_profile_type">
+                                        <option value="" disabled selected>TIPO DE USUÁRIO</option>
+                                        <option value="101" {% if form.profile_type.value == 101 %}selected{% endif %}>FUNCIONÁRIO</option>
+                                        <option value="102" {% if form.profile_type.value == 102 %}selected{% endif %}>GESTOR</option>
+                                    </select>
+                                    <label class="mdc-floating-label" for="field_profile_type">Perfil</label>
+                                </div>
+                                <div>{{ form.profile_type.errors }}</div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="col s12 m12 xl12">
+                    <div class="row">
+                        <fieldset class="col s12 m8 xl8">
+                            <h5>Endereço</h5>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_fulll_address">Endereço completo</label>
+                                <input name="full_address" type="text" id="field_fulll_address"
+                                       class="mdc-text-field__input"
+                                       value="{{ form.full_address.value|default_if_none:"" }}"
+                                       placeholder="Rua/Avenida W, nº X, Apto Y, Bairro Z"
+                                >
+                                <div>{{ form.full_address.errors }}</div>
+                            </div>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_city_state">Cidade - Estado</label>
+                                <input name="city_state" type="text" id="field_city_state"
+                                       class="mdc-text-field__input"
+                                       value="{{ form.city_state.value|default_if_none:"" }}"
+                                       placeholder="Ex. São Paulo - SP">
+                                <div>{{ form.city_state.errors }}</div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                {{ form.non_field_errors }}
+                <div class="row">
+                    <div class="col s12 m2 xl1">
+                        <button type="submit" class="btn btn-large">
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+{% block extra_scripts %}
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('select');
+        var options = {};
+        var instances = M.FormSelect.init(elems, options);
+      });
+    </script>
+{% endblock %}

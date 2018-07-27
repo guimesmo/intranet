@@ -20,7 +20,8 @@ from django.contrib.auth.views import logout
 from django.urls import path
 from django.views.generic import RedirectView
 
-from user_profile.views import UserFileList, delete_file, toogle_visibility, UserProfileView, UserList
+from user_profile.views import UserFileList, delete_file, toogle_visibility, UserProfileView, UserList, \
+    UserProfileCreateView, UserProfileAdminEditView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +33,9 @@ urlpatterns = [
     # user profile
     path('perfil/', login_required(UserProfileView.as_view())),
     path('usuarios/', login_required(UserList.as_view())),
+    path('usuarios/novo/', login_required(UserProfileCreateView.as_view())),
+    path('usuarios/<user_profile_id>/', UserProfileAdminEditView.as_view()),
+
 
     # account actions
     path('login/', LoginView.as_view(template_name='login.html')),
