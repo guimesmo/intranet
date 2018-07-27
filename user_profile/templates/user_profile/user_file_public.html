@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="row">
+        <div class="col s12 m12 xl12">
+            <table id="example" class="mdl-data-table" style="width:100%">
+                <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Nome do arquivo</th>
+                    <th>Data</th>
+                    <th>Tamanho (Mb)</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for userfile in object_list %}
+                    <tr>
+                        <td style="width: 20px"><i class="material-icons">all_inbox</i></td>
+                        <td><a href="{{ userfile.upload.url }}">{{ userfile.get_filename }}</a></td>
+                        <td>{{ userfile.upload_date|date:"d/m/Y" }}</td>
+                        <td>{{ userfile.get_file_size|floatformat:2 }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="orange-text">Nenhum arquivo encontrado</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if is_paginated %}
+        <ul class="pagination right">
+            {% if page_obj.has_previous %}
+                <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a>
+                </li>
+            {% endif %}
+            <li class="waves-effect">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </li>
+            {% if page_obj.has_next %}
+                <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
+
+{% endblock %}

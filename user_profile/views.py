@@ -138,9 +138,17 @@ class UserFileListAdmin(ListView):
         return super().dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        super().get_queryset()
         user = User.objects.get(pk=self.kwargs['user_profile_id'])
         return self.model.objects.filter(owner=user)
+
+
+class PublicFileListView(ListView):
+    template_name = "user_profile/user_file_public.html"
+    model = UserFile
+    paginate_by = 30
+
+    def get_queryset(self):
+        return self.model.objects.filter(public=True)
 
 
 def delete_file(request, upload_id):

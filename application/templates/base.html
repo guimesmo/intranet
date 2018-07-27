@@ -38,9 +38,10 @@
     <nav>
         <div class="container">
             <div class="nav-wrapper">
-                <a href="/" class="brand-logo">INTRANET</a>
-                <ul id="nav-mobile" class="right hide-on-med-and-down">
-                    <li {% if request.get_full_path == "/uploads/" %} class="active"{% endif %}><a href="/uploads/">Uploads</a></li>
+                <a href="/" class="brand-logo  hide-on-med-and-down">INTRANET</a>
+                <ul id="nav-mobile" class="right">
+                    <li {% if request.get_full_path == "/uploads/" %} class="active"{% endif %}><a href="/uploads/">Meus envios</a></li>
+                    <li {% if request.get_full_path == "/publico/" %} class="active"{% endif %}><a href="/publico/">Público</a></li>
                     {% if perms.user_profile.can_manage_user_information %}
                     <li {% if request.get_full_path == "/usuarios/" %} class="active"{% endif %}><a href="/usuarios/">Gerenciar usuários</a></li>
                     {% endif %}
