@@ -65,6 +65,17 @@ class UserFileList(ListView):
         if not upload:
             messages.add_message(request, messages.ERROR, "Falha ao enviar arquivo. Por favor, verifique ")
         else:
+            if request.user.userprofile.upload_volume_limit is not None:
+                file_size = len(upload)/(1024*1024)
+                final_usage_estimate = request.user.userprofile.get_volume_of_user_files() + file_size
+                if final_usage_estimate > request.user.userprofile.upload_volume_limit:
+                    messages.add_message(request, messages.ERROR, "O tamanho do arquivo excede o seu limite de armazenamento")
+                    return HttpResponseRedirect(next_url)
+            if request.user.userprofile.upload_number_limit is not None:
+                if request.user.userprofile.get_number_of_user_files() > request.user.userprofile.upload_number_limit:
+                    messages.add_message(request, messages.ERROR, "Você está excedendo seu limite de envio de arquivos")
+                    return HttpResponseRedirect(next_url)
+
             public = request.POST.get("public")
             UserFile.objects.create(
                 owner=request.user,

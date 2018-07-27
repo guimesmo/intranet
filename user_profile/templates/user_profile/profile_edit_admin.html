@@ -93,6 +93,31 @@
                         </fieldset>
                     </div>
                 </div>
+                <div class="col s12 m12 xl12">
+                    <div class="row">
+                        <fieldset class="col s12 m8 xl8">
+                            <h5>Armazenamento</h5>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_upload_number_limit">Número limite de arquivos</label>
+                                <input name="upload_number_limit" type="number" step="1" id="field_upload_number_limit"
+                                       class="mdc-text-field__input"
+                                       value="{{ form.upload_number_limit.value|default_if_none:"" }}"
+                                       placeholder="Deixe vazio para ilimitado"
+                                >
+                                <div>{{ form.upload_number_limit.errors }}</div>
+                            </div>
+                            <div class="mdc-text-field">
+                                <label class="mdc-floating-label" for="field_upload_volume_limit">Volume limite de arquivos (em MB)</label>
+                                <input name="upload_volume_limit" type="number" step="1" id="field_upload_volume_limit"
+                                       class="mdc-text-field__input"
+                                       value="{{ form.upload_volume_limit.value|default_if_none:"" }}"
+                                       placeholder="Deixe vazio para ilimitado"
+                                >
+                                <div>{{ form.upload_volume_limit.errors }}</div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
                 {{ form.non_field_errors }}
                 <div class="row">
                     <div class="col s12 m2 xl1">
