@@ -21,7 +21,7 @@ from django.urls import path
 from django.views.generic import RedirectView
 
 from user_profile.views import UserFileList, delete_file, toogle_visibility, UserProfileView, UserList, \
-    UserProfileCreateView, UserProfileAdminEditView, UserFileListAdmin, PublicFileListView
+    UserProfileCreateView, UserProfileAdminEditView, UserFileListAdmin, PublicFileListView, UserFileInformationApi
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +39,7 @@ urlpatterns = [
 
     # public
     path('publico/', login_required(PublicFileListView.as_view())),
+    path('api/utilizacao/', UserFileInformationApi.as_view()),
 
 
     # account actions

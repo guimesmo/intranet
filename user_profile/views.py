@@ -1,7 +1,9 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import permission_required
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
 
@@ -149,6 +151,15 @@ class PublicFileListView(ListView):
 
     def get_queryset(self):
         return self.model.objects.filter(public=True)
+
+
+class UserFileInformationApi(View):
+    def get(self, request):
+        data = [{"nome": upfl.user.get_full_name(),
+                 "volume-utilizado": upfl.get_volume_of_user_files(),
+                 "numero-arquivos": upfl.get_number_of_user_files(),
+                 } for upfl in UserProfile.objects.all()]
+        return JsonResponse(data, safe=False)
 
 
 def delete_file(request, upload_id):
