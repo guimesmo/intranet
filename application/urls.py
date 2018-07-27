@@ -21,7 +21,7 @@ from django.urls import path
 from django.views.generic import RedirectView
 
 from user_profile.views import UserFileList, delete_file, toogle_visibility, UserProfileView, UserList, \
-    UserProfileCreateView, UserProfileAdminEditView
+    UserProfileCreateView, UserProfileAdminEditView, UserFileListAdmin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,6 +35,7 @@ urlpatterns = [
     path('usuarios/', login_required(UserList.as_view())),
     path('usuarios/novo/', login_required(UserProfileCreateView.as_view())),
     path('usuarios/<user_profile_id>/', UserProfileAdminEditView.as_view()),
+    path('usuarios/<user_profile_id>/uploads/', UserFileListAdmin.as_view()),
 
 
     # account actions

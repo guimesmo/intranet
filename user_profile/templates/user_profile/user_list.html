@@ -16,6 +16,7 @@
                     <th>Limite (número)</th>
                     <th>Utilização (Mb)</th>
                     <th style="width: 20px">Editar</th>
+                    <th style="width: 20px">Arquivos</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -36,8 +37,11 @@
                         <td>
                             {{ userprofile.get_volume_of_user_files|floatformat:3|default_if_none:0  }} MB
                         </td>
-                        <td>
+                        <td class="center">
                             <a href="/usuarios/{{ userprofile.pk }}" class="orange-text"><i class="material-icons">edit</i></a>
+                        </td>
+                        <td class="center">
+                            <a href="/usuarios/{{ userprofile.pk }}/uploads/" class="blue-text" title="ver arquivos"><i class="material-icons">details</i></a>
                         </td>
                     </tr>
                 {% empty %}

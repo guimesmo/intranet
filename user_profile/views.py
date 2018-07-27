@@ -49,43 +49,6 @@ class UserProfileView(View):
         return render(request, "user_profile/profile_edit.html", context={"form": form, "user": user})
 
 
-class UserFileList(ListView):
-    template_name = "user_profile/user_file_list.html"
-    model = UserFile
-    paginate_by = 30
-
-    def get_queryset(self):
-        user = self.request.user
-        return self.model.objects.filter(owner=user)
-
-    def post(self, request):
-        next_url = request.GET.get("next", "/uploads")
-
-        upload = request.FILES.get("upload")
-        if not upload:
-            messages.add_message(request, messages.ERROR, "Falha ao enviar arquivo. Por favor, verifique ")
-        else:
-            if request.user.userprofile.upload_volume_limit is not None:
-                file_size = len(upload)/(1024*1024)
-                final_usage_estimate = request.user.userprofile.get_volume_of_user_files() + file_size
-                if final_usage_estimate > request.user.userprofile.upload_volume_limit:
-                    messages.add_message(request, messages.ERROR, "O tamanho do arquivo excede o seu limite de armazenamento")
-                    return HttpResponseRedirect(next_url)
-            if request.user.userprofile.upload_number_limit is not None:
-                if request.user.userprofile.get_number_of_user_files() > request.user.userprofile.upload_number_limit:
-                    messages.add_message(request, messages.ERROR, "Você está excedendo seu limite de envio de arquivos")
-                    return HttpResponseRedirect(next_url)
-
-            public = request.POST.get("public")
-            UserFile.objects.create(
-                owner=request.user,
-                public=bool(public),
-                upload=upload
-            )
-            messages.add_message(request, messages.SUCCESS, "Arquivo inserido com sucesso")
-        return HttpResponseRedirect(next_url)
-
-
 class UserList(ListView):
     template_name = "user_profile/user_list.html"
     model = UserProfile
@@ -126,6 +89,58 @@ class UserProfileAdminEditView(UpdateView):
         instance = form.save()
         messages.success(self.request, "Informações atualizadas com sucesso")
         return HttpResponseRedirect("/usuarios/%s" % instance.id)
+
+
+class UserFileList(ListView):
+    template_name = "user_profile/user_file_list.html"
+    model = UserFile
+    paginate_by = 30
+
+    def get_queryset(self):
+        user = self.request.user
+        return self.model.objects.filter(owner=user)
+
+    def post(self, request):
+        next_url = request.GET.get("next", "/uploads")
+
+        upload = request.FILES.get("upload")
+        if not upload:
+            messages.add_message(request, messages.ERROR, "Falha ao enviar arquivo. Por favor, verifique ")
+        else:
+            if request.user.userprofile.upload_volume_limit is not None:
+                file_size = len(upload)/(1024*1024)
+                final_usage_estimate = request.user.userprofile.get_volume_of_user_files() + file_size
+                if final_usage_estimate > request.user.userprofile.upload_volume_limit:
+                    messages.add_message(request, messages.ERROR, "O tamanho do arquivo excede o seu limite de armazenamento")
+                    return HttpResponseRedirect(next_url)
+            if request.user.userprofile.upload_number_limit is not None:
+                if request.user.userprofile.get_number_of_user_files() > request.user.userprofile.upload_number_limit:
+                    messages.add_message(request, messages.ERROR, "Você está excedendo seu limite de envio de arquivos")
+                    return HttpResponseRedirect(next_url)
+
+            public = request.POST.get("public")
+            UserFile.objects.create(
+                owner=request.user,
+                public=bool(public),
+                upload=upload
+            )
+            messages.add_message(request, messages.SUCCESS, "Arquivo inserido com sucesso")
+        return HttpResponseRedirect(next_url)
+
+
+class UserFileListAdmin(ListView):
+    template_name = "user_profile/user_file_list_admin.html"
+    model = UserFile
+    paginate_by = 30
+
+    @method_decorator(permission_required("user_profile.can_see_all_files"))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        super().get_queryset()
+        user = User.objects.get(pk=self.kwargs['user_profile_id'])
+        return self.model.objects.filter(owner=user)
 
 
 def delete_file(request, upload_id):
